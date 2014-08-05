@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8" />
+<title>Dicionario Libras - UCA Assistiva</title>
+<link rel="Stylesheet"  href="DicStyle.css"/>
+<link href='http://fonts.googleapis.com/css?family=Ubuntu:500,700,500italic' rel='stylesheet' type='text/css'>
+</head>
+
+<script src="DicLib.js"></script>
+
+<body onload="loadFile()">
+
+
+
+
+<div id="content">
+	<div id="header">
+		<h1>Dicionário de LIBRAS</h1>
+	</div>
+	<div id="header_border"></div>
+	<div id="menuletras"><ul id="letters"><li onClick="displaycounterents('A')" id="A">A</li> - <li onClick="displaycounterents('B')" id="B">B</li> - <li onClick="displaycounterents('C')" id="C">C</li> - <li onClick="displaycounterents('D')" id="D">D</li> - <li onClick="displaycounterents('E')" id="E">E</li> - <li onClick="displaycounterents('F')" id="F">F</li> - <li onClick="displaycounterents('G')" id="G">G</li> - <li onClick="displaycounterents('H')" id="H">H</li> - <li onClick="displaycounterents('I')" id="I">I</li> - <li onClick="displaycounterents('J')" id="J">J</li> - <li onClick="displaycounterents('K')" id="K">K</li> - <li onClick="displaycounterents('L')"  id="L">L</li> - <li onClick="displaycounterents('M')"  id="M">M</li> - <li onClick="displaycounterents('N')" id="N">N</li> - <li onClick="displaycounterents('O')" id="O">O</li> - <li onClick="displaycounterents('P')" id="P">P</li> - <li onClick="displaycounterents('Q')" id="Q">Q</li> - <li onClick="displaycounterents('R')" id="R">R</li> - <li onClick="displaycounterents('S')" id="S">S</li> - <li onClick="displaycounterents('T')" id="T">T</li> - <li onClick="displaycounterents('U')" id="U">U</li> - <li onClick="displaycounterents('V')" id="V">V</li> - <li onClick="displaycounterents('W')" id="W">W</li> - <li onClick="displaycounterents('X')" id="X">X</li> - <li onClick="displaycounterents('Y')" id="Y">Y</li> - <li onClick="displaycounterents('Z')" id="Z">Z</li></ul></div>
+	<div id="busca">
+		<ul>
+			<li>
+				<input type="text" id="search" placeholder="Digite a palavra"  onkeyup="search()"></input>
+			</li>
+			<li>
+				<button id='searcher' onClick="search()" >Busca</button>
+			</li>
+		</ul>
+		
+		<select id="word" size="10">
+			<option value="word"> 
+				<var id="word"></var> <!--aqui entrarao os itens da tabela do "DB" na coluna Word, e serao ativadas onclick pela função que mostrará os outros dados daquela palavra-->
+			</option>
+		</select>
+	</div>
+	<div id="display_video">
+		<div id="wordvar_container">
+			<var id='wordvar'></var>
+		</div>
+		<object width="250" height="175" id="video"></object><button id="replay" onClick="javascript:document.video.Play();">Replay</button>
+	</div>
+	<div id="imagemmao">
+		<table id="hand">
+				<tr class="hand_id">
+					<td> 							 
+						<label for="sign">Imagem da Mão</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<img width='110' id='img' />
+					</td>
+				</tr>
+		</table>
+	</div>
+	<div id="separator"></div>
+	<div id="attributes">
+		<table id="downright">
+			<tr class="atrb_id">
+				<td>  
+					<label for="meaning">Significado</label>									
+				</td> 
+				<td> 
+					<label for="example" class="centro">Exemplo</label>									
+				</td> 
+				<td> 
+					<label for="signexample" class="direita">Exemplo Libras</label>									
+				</td> 
+				
+			</tr>
+			<tr class="atrb_dscrpt">
+				<td>
+					
+					<var id="meaning"><textarea  rows=5 readonly></textarea></var>
+					
+				</td>
+				<td>
+					<var id="example" class="centro"><textarea  rows=5 readonly></textarea></var>
+				</td>
+				<td>
+					<var id="signexample" class="direita"><textarea  rows=5 readonly></textarea></var>
+				</td>
+				
+			</tr>
+		</table>
+	</div>
+	<div id="finalizer"></div>
+</div>
+
+<script>
+var last="A";;
+var reader = new XMLHttpRequest() || new ActivexObject('MSXML2.XMLHTTP');
+var dic;
+//var index = new Array(); 
+
+function loadFile() //carrega o csv com as informações que compõem o dicionário
+{
+	dic = createDictionary();
+	//ver se isso funciona, senao coloca em variaveis diferentes, pra word, sign, blablabla...
+	
+	
+};
+
+
+var listbox='';
+
+function displaycounterents(letter) //ao clicar em cima de alguma letra, mostra todas as palavras com aquela letra, no listbox
+{
+	
+		listbox=''; //esvazia-se o listbox para nao poluir a tela
+		//e cria-se o novo
+		for(n in dic)
+		{	
+			if(dic[n].letter == letter){
+				createElement(n);
+			}
+		}
+	
+	
+	document.getElementById(last).setAttribute("class", "inactive");
+	document.getElementById(letter).setAttribute("class", "active");
+	last=letter;
+
+	//document.getElementById(letter).setAttribute("class", "active");
+
+};
+
+
+
+function createElement(counter) {
+	//cria a linha do listbox indexada com um numero
+	
+	listbox.index=counter;
+	listbox +='<option value="'+counter+'" onClick="showElement('+counter+')" >'+dic[counter].word+'</option>';
+	
+	document.getElementById('word').innerHTML=listbox;
+	
+};
+
+function showElement(index) {
+	//ao clicar numa palavra, mostrará as informações adequadas
+	document.getElementById('wordvar').innerHTML=dic[index].word;
+	var meaningbox="<textarea  rows=5 readonly>"+dic[index].meaning+"</textarea>";
+	document.getElementById('meaning').innerHTML=meaningbox;
+	var examplebox="<textarea  rows=5 readonly>"+dic[index].example+"</textarea>";
+	document.getElementById('example').innerHTML=examplebox;
+	var signexamplebox="<textarea  rows=5 readonly>"+dic[index].signexample+"</textarea>";
+	document.getElementById('signexample').innerHTML=signexamplebox;
+	var image ='img/' + dic[index].img + '.jpg';
+	document.getElementById('img').setAttribute('src', image);
+	var video = 'vid/' + dic[index].video;
+	document.getElementById('video').setAttribute('data', video);
+};
+
+function search(){
+	
+	var searcher = document.getElementById('search').value;
+	searcher=searcher.toUpperCase();
+	var searched;
+	listbox='';
+	if (searcher.length>=2){
+		
+
+		for (n in dic)
+		{	
+			searched=dic[n].word;
+			if (searched.indexOf(searcher) != -1)
+			{
+				createElement(n);
+			}
+		}
+	}
+	else if(searcher.lenght<2){
+	listbox='';
+	}
+}
+
+
+</script>
+
+
+</body>
+</html>
